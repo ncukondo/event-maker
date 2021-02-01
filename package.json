@@ -1,6 +1,6 @@
 {
   "name": "@ncukondo/event-maker",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "One event per one event.",
   "keywords": [
     "events",
