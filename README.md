@@ -1,6 +1,6 @@
-# eventmit [![Actions Status](https://github.com/azu/eventmit/workflows/test/badge.svg)](https://github.com/azu/eventmit/actions?query=workflow%3A"test")
+# event-maker
 
-A single event object per the event.
+Very simple event emitter.
 
 ## Feature
 
@@ -12,73 +12,77 @@ A single event object per the event.
 
 Install with [npm](https://www.npmjs.com/):
 
-    npm install eventmit
+    npm i @ncukondo/event-maker
 
-Requirement: ECMAScript 2015 because this library use [`Set`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set).
+Requirement: ECMAScript 2015 because this library use [`Map`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map).
 
 ## Usage
 
 Create an eventmit object and register handler and invoke handlers.
 
 ```ts
-import { eventmit } from "eventmit";
-const event = eventmit<{ key: string }>();
+import { makeEvent } from "@ncukondo/event-maker";
+const onEvent1 = makeEvent();
 // Register handler
-event.on((value) => {
-    console.log(1, value);
+onEvent1(() => {
+  console.log(1);
 });
-event.on((value) => {
-    console.log(2, value);
+onEvent1.once(() => {
+  console.log(2);
 });
 // Invoke handler
-event.emit({
-    key: "value"
+onEvent1.emit(); // 1,2
+onEvent1.emit(); // 1
+// Unregister handler
+onEvent1.clear();
+
+const onEvent2 = makeEvent<{ key: string }>();
+// Register handler
+onEvent2((value) => {
+  console.log(1, value);
+});
+onEvent2((value) => {
+  console.log(2, value);
+});
+// Invoke handler
+onEvent2.emit({
+  key: "value"  //1 value, 2 value
 });
 // Unregister handler
-event.offAll();
+onEvent2.clear();
 ```
 
 ## API
 
 ```ts
-export declare type EventmitHandler<T> = (value: T) => any;
-export declare type Eventmitter<T> = {
+declare type ToArgsType<T> = T extends Array<unknown> ? T : readonly [T];
+declare type EventHandler<T> = (...args: ToArgsType<T>) => unknown;
+declare type Eventemitter<T> = {
     /**
      * Register an event handler
      */
-    on: (handler: EventmitHandler<T>) => void;
+    (handler: EventHandler<T>): void;
+    /**
+     * Register an once only event handler
+     */
+    once: (handler: EventHandler<T>) => void;
     /**
      * Remove an event handler
      */
-    off: (handler: EventmitHandler<T>) => void;
+    remove: (handler: EventHandler<T>) => void;
     /**
      * Remove all event handlers
      */
-    offAll: () => void;
+    clear: () => void;
     /**
      * Invoke all handlers
      */
-    emit: (value: T) => void;
+    emit: (...value: ToArgsType<T>) => void;
 };
-export declare const eventmit: <T>() => Eventmitter<T>;
+declare const makeEvent: <T extends unknown = []>() => Eventemitter<T>;
+export { makeEvent };
+export type { EventHandler, Eventemitter };
 ```
-
-## ECMAScript Modules
-
-You can import `eventmit` as ES Modules.
-
-```js
-import { eventmit } from "https://unpkg.com/eventmit?module";
-const event = eventmit();
-// Register handler
-event.on((value) => {
-    console.log(value);
-});
-// Invoke handler
-event.emit("value");
-```
-
-It means that eventmit work on Browser and [Deno](https://deno.land/).
 
 ## Changelog
 
@@ -90,28 +94,17 @@ Install devDependencies and Run `npm test`:
 
     npm test
 
-## Contributing
-
-Pull requests and stars are always welcome.
-
-For bugs and feature requests, [please create an issue](https://github.com/azu/eventmit/issues).
-
-1. Fork it!
-2. Create your feature branch: `git checkout -b my-new-feature`
-3. Commit your changes: `git commit -am 'Add some feature'`
-4. Push to the branch: `git push origin my-new-feature`
-5. Submit a pull request :D
 
 ## Author
 
-- [github/azu](https://github.com/azu)
-- [twitter/azu_re](https://twitter.com/azu_re)
+- [github/ncukondo](https://github.com/ncukondo)
 
 ## License
 
-MIT © azu
+MIT
 
 ## Related
 
+- [eventmit: A single event object per the event.](https://github.com/azu/eventmit)
 - [developit/mitt: 🥊 Tiny 200 byte functional event emitter / pubsub.](https://github.com/developit/mitt)
     - Support multiple event type
