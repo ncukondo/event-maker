@@ -86,7 +86,7 @@ export type { EventHandler, Eventemitter };
 
 ## Changelog
 
-See [Releases page](https://github.com/azu/eventmit/releases).
+See [Releases page](https://github.com/ncukondo/event-maker/releases).
 
 ## Running tests
 
