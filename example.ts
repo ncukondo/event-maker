@@ -17,10 +17,10 @@ onEvent1.clear();
 const onEvent2 = makeEvent<{ key: string }>();
 // Register handler
 onEvent2((value) => {
-  console.log(1, value);
+  console.log(1, value.key);
 });
 onEvent2((value) => {
-  console.log(2, value);
+  console.log(2, value.key);
 });
 // Invoke handler
 onEvent2.emit({
@@ -36,6 +36,6 @@ onEvent3((type,message) => {
   console.log(1, `eventType:${type} message:${message}`);
 });
 // Invoke handler
-onEvent3.emit("customEvent1","some message");
+onEvent3.emit("customEvent1","some message"); // eventType:customEvent1 message:some message
 // Unregister handler
 onEvent3.clear();

@@ -18,15 +18,17 @@ Requirement: ECMAScript 2015 because this library use [`Map`](https://developer.
 
 ## Usage
 
-Create an eventmit object and register handler and invoke handlers.
+Create an event object and register handler and invoke handlers.
 
 ```ts
 import { makeEvent } from "@ncukondo/event-maker";
+
 const onEvent1 = makeEvent();
-// Register handler
+// Register a handler
 onEvent1(() => {
   console.log(1);
 });
+// Register an once only handler
 onEvent1.once(() => {
   console.log(2);
 });
@@ -35,21 +37,39 @@ onEvent1.emit(); // 1,2
 onEvent1.emit(); // 1
 // Unregister handler
 onEvent1.clear();
+```
 
-const onEvent2 = makeEvent<{ key: string }>();
+You can pass payload to the event.
+
+```ts
+const onEvent2 = makeEvent<{ payload: string }>();
 // Register handler
 onEvent2((value) => {
-  console.log(1, value);
+  console.log(1, value.payload);
 });
 onEvent2((value) => {
-  console.log(2, value);
+  console.log(2, value.payload);
 });
 // Invoke handler
 onEvent2.emit({
-  key: "value"  //1 value, 2 value
+  payload: "value"  //1 value, 2 value
 });
 // Unregister handler
 onEvent2.clear();
+```
+
+You also can pass multiple paramaters to the event.
+
+```ts
+const onEvent3 = makeEvent<[type:string,message:string]>();
+// Register handler
+onEvent3((type,message) => {
+  console.log(1, `eventType:${type} message:${message}`);
+});
+// Invoke handler
+onEvent3.emit("customEvent1","some message"); // eventType:customEvent1 message:some message
+// Unregister handler
+onEvent3.clear();
 ```
 
 ## API
